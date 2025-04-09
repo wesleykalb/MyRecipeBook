@@ -3,7 +3,7 @@ using MyRecipeBook.Communication.Requests;
 
 namespace MyRecipeBook.Application.Services.AutoMapper
 {
-    class AutoMapping : Profile
+    public class AutoMapping : Profile
     {
         public AutoMapping() 
         {
