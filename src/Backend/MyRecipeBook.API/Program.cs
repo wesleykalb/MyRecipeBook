@@ -2,6 +2,8 @@ using MyRecipeBook.API.Filters;
 using MyRecipeBook.API.Middleware;
 using MyRecipeBook.Application;
 using MyRecipeBook.Infraestructure;
+using MyRecipeBook.Infraestructure.Extensions;
+using MyRecipeBook.Infraestructure.Migrations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,4 +39,24 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+MigrateDatabase();
+
 app.Run();
+
+void MigrateDatabase()
+{
+    if (builder.Configuration.IsUnitTestEnvironment())
+        return;
+
+    var connectionString = builder.Configuration.ConnectionString();
+
+    var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>()
+        .CreateScope();
+
+    DatabaseMigration.Migrate(connectionString, serviceScope.ServiceProvider);
+}
+
+public partial class Program
+{
+
+}
