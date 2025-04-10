@@ -24,6 +24,7 @@ namespace UsesCases.Test.User.Register
             result.Name.ShouldBe(request.Name);
         }
 
+        [Fact]
         public async Task Error_Email_Alread_Registered()
         {
             var request = RequestRegisterUserJsonBuilder.Build();
@@ -37,6 +38,7 @@ namespace UsesCases.Test.User.Register
                 );
         }
 
+        [Fact]
         public async Task Error_Name_Empty()
         {
             var request = RequestRegisterUserJsonBuilder.Build();
@@ -51,7 +53,7 @@ namespace UsesCases.Test.User.Register
                 );
         }
 
-        private RegisterUserUseCase CreateUserCase(string? email = null)
+        private static RegisterUserUseCase CreateUserCase(string? email = null)
         {
             var mapper = MapperBuilder.Build();
 
