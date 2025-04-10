@@ -80,7 +80,7 @@ namespace Validator.Test.User.Register
         {
             var validator = new RegisterUserValidator();
 
-            var request = RequestRegisterUserJsonBuilder.Build();
+            var request = RequestRegisterUserJsonBuilder.Build(passwordLenght);
 
             var result = validator.Validate(request);
 
