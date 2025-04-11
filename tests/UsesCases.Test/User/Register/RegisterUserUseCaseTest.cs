@@ -34,7 +34,7 @@ namespace UsesCases.Test.User.Register
             (await act.ShouldThrowAsync<ErrorOnValidationException>())
                 .ShouldSatisfyAllConditions(
                     () => act.ShouldNotBeNull(),
-                    () => act.ShouldThrow<ErrorOnValidationException>().Message.ShouldBe(ResourceMessagesException.EMAIL_ALREADY_REGISTERED)
+                    () => act.ShouldThrow<ErrorOnValidationException>().ErrorMessages.Contains(ResourceMessagesException.EMAIL_ALREADY_REGISTERED)
                 );
         }
 
@@ -49,7 +49,7 @@ namespace UsesCases.Test.User.Register
             (await act.ShouldThrowAsync<ErrorOnValidationException>())
                 .ShouldSatisfyAllConditions(
                     () => act.ShouldNotBeNull(),
-                    () => act.ShouldThrow<ErrorOnValidationException>().Message.ShouldBe(ResourceMessagesException.NAME_EMPTY)
+                    () => act.ShouldThrow<ErrorOnValidationException>().ErrorMessages.Contains(ResourceMessagesException.NAME_EMPTY)
                 );
         }
 
