@@ -35,5 +35,5 @@ steps:
       git ls-remote --heads github
       echo "=== OPERAÇÃO CONCLUÍDA COM SUCESSO ==="
   env:
-      GITHUB_TOKEN: $(GITHUB_PAT)
+      GITHUB_TOKEN: $(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)
   displayName: 'Push Completo para GitHub'
