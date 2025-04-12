@@ -1,0 +1,18 @@
+trigger:
+  - develop  
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+  - checkout: git://$(Build.Repository.Name)/$(Build.Repository.Id)
+
+  - script: |
+      git config --global user.email "wesleykalb10@gmail.com"
+      git config --global user.name "Azure Pipeline"
+      git remote add github https://$(github-connection)@github.com/wesleykalb/MyRecipeBook.git
+      git pull origin main
+      git push github main
+    displayName: 'Espelhar para GitHub'
+    env:
+      github-connection: $(github-connection)
