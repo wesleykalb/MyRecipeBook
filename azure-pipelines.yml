@@ -1,39 +1,39 @@
 steps:
-- checkout: git://$(Build.Repository.Name)/$(Build.Repository.Id)
+- checkout: self
   fetchDepth: 0
   persistCredentials: true
 
-- script: |
-    # Configuração essencial
-    git config --global user.email "azure-pipeline@example.com"
-    git config --global user.name "Azure Pipeline"
-    
-    # Mostra o estado atual para debug
-    echo "=== ESTADO INICIAL ==="
-    git status
-    git branch -a
-    git remote -v
-    ls -la
-    
-    # Configura autenticação com GitHub usando PAT
-    git remote add github https://$(GITHUB_PAT)@github.com/wesleykalb/MyRecipeBook.git
-    
-    # Renomeia a branch atual para develop se necessário
-    git checkout -b develop 2>/dev/null || git checkout develop
-    
-    # Sincroniza com o repositório GitHub
-    git fetch github
-    
-    # Faz push de TUDO para o GitHub (forçado se necessário)
-    git push --force --tags github
-    git push github --mirror
-    
-    # Verificação final
-    echo "=== ESTADO FINAL ==="
-    git status
-    git branch -a
-    git remote -v
-    ls -la
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Configurações essenciais
+      git config --global user.email "azure-pipeline@example.com"
+      git config --global user.name "Azure Pipeline"
+      
+      # Debug inicial
+      echo "=== ESTADO INICIAL ==="
+      git status
+      git branch -a
+      git remote -v
+      ls -la
+      
+      # Configurar autenticação com GitHub
+      echo "Configurando autenticação..."
+      git config --global credential.helper store
+      echo "https://$(GITHUB_TOKEN):x-oauth-basic@github.com" > ~/.git-credentials
+      
+      # Adicionar remote do GitHub
+      git remote add github https://github.com/wesleykalb/MyRecipeBook.git
+      
+      # Forçar push de TUDO para o GitHub
+      echo "Executando push para GitHub..."
+      git push --mirror github
+      
+      # Verificação final
+      echo "=== ARQUIVOS ENVIADOS ==="
+      git ls-remote --heads github
+      echo "=== OPERAÇÃO CONCLUÍDA COM SUCESSO ==="
   env:
-    GITHUB_PAT: $(GITHUB_PAT)  # Certifique-se que esta variável está definida nas variáveis do pipeline
+      GITHUB_TOKEN: $(GITHUB_PAT)
   displayName: 'Push Completo para GitHub'
