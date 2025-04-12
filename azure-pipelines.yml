@@ -1,7 +1,7 @@
 steps:
 - checkout: git://$(Build.Repository.Name)/$(Build.Repository.Id)
   fetchDepth: 0
-  persistCredentials: true  # Mantém as credenciais para operações posteriores
+  persistCredentials: true
 
 - script: |
     # Configuração essencial
@@ -13,29 +13,27 @@ steps:
     git status
     git branch -a
     git remote -v
+    ls -la
     
-    # Configura autenticação com GitHub
-    git config --global credential.helper store
-    echo "https://x-access-token:$(GITHUB_PATH)@github.com" > ~/.git-credentials
+    # Configura autenticação com GitHub usando PAT
+    git remote add github https://$(GITHUB_PAT)@github.com/wesleykalb/MyRecipeBook.git
     
-    # Adiciona remote do GitHub
-    git remote add github https://github.com/wesleykalb/MyRecipeBook.git
+    # Renomeia a branch atual para develop se necessário
+    git checkout -b develop 2>/dev/null || git checkout develop
     
     # Sincroniza com o repositório GitHub
     git fetch github
     
-    # Garante que estamos na branch develop
-    git checkout develop
-    
-    # Faz push de TUDO para o GitHub
-    git push --all github
-    git push --tags github
+    # Faz push de TUDO para o GitHub (forçado se necessário)
+    git push --force --all github
+    git push --force --tags github
     
     # Verificação final
     echo "=== ESTADO FINAL ==="
     git status
     git branch -a
+    git remote -v
     ls -la
   env:
-    GITHUB_PATH: $(GITHUB_PAT)
+    GITHUB_PAT: $(GITHUB_PAT)  # Certifique-se que esta variável está definida nas variáveis do pipeline
   displayName: 'Push Completo para GitHub'
