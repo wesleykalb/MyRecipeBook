@@ -3,37 +3,22 @@ steps:
   fetchDepth: 0
   persistCredentials: true
 
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Configurações essenciais
-      git config --global user.email "azure-pipeline@example.com"
-      git config --global user.name "Azure Pipeline"
-      
-      # Debug inicial
-      echo "=== ESTADO INICIAL ==="
-      git status
-      git branch -a
-      git remote -v
-      ls -la
-      
-      # Configurar autenticação com GitHub
-      echo "Configurando autenticação..."
-      git config --global credential.helper store
-      echo "https://$(GITHUB_TOKEN):x-oauth-basic@github.com" > ~/.git-credentials
-      
-      # Adicionar remote do GitHub
-      git remote add github https://github.com/wesleykalb/MyRecipeBook.git
-      
-      # Forçar push de TUDO para o GitHub
-      echo "Executando push para GitHub..."
-      git push --mirror github
-      
-      # Verificação final
-      echo "=== ARQUIVOS ENVIADOS ==="
-      git ls-remote --heads github
-      echo "=== OPERAÇÃO CONCLUÍDA COM SUCESSO ==="
-  env:
-      GITHUB_TOKEN: $(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)
-  displayName: 'Push Completo para GitHub'
+- script: |
+    # Configuração essencial
+    git config --global user.email "wesleykalb10@gmail.com"
+    git config --global user.name "Azure Pipeline"
+    
+    # Criar branch develop local a partir da origin/develop
+    git checkout -b develop origin/develop
+    
+    # Adicionar remote do GitHub COM autenticação
+    git remote add github https://$(GITHUB_PAT)@github.com/wesleykalb/MyRecipeBook.git
+    
+    # Forçar push somente da branch develop
+    git push github develop --force
+    
+    # Verificação
+    echo "=== ARQUIVOS ENVIADOS ==="
+    git ls-remote --heads github
+    echo "=== SUCESSO ==="
+  displayName: 'Sincronizar Develop com GitHub'
