@@ -25,8 +25,8 @@ steps:
     git fetch github
     
     # Faz push de TUDO para o GitHub (forçado se necessário)
-    git push --force --all github
     git push --force --tags github
+    git push github --mirror
     
     # Verificação final
     echo "=== ESTADO FINAL ==="
