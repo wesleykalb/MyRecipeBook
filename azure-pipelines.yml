@@ -1,18 +1,19 @@
-trigger:
-  - develop  
-
-pool:
-  vmImage: 'windows-latest'
-
 steps:
-  - checkout: git://$(Build.Repository.Name)/$(Build.Repository.Id)
+- checkout: git://$(Build.Repository.Name)/$(Build.Repository.Id)
 
-  - script: |
-      git config --global user.email "wesleykalb10@gmail.com"
-      git config --global user.name "Azure Pipeline"
-      git remote add github https://$(GITHUB_PAT)@github.com/wesleykalb/MyRecipeBook.git
-      git pull origin main
-      git push github main
-    displayName: 'Espelhar para GitHub'
-    env:
-      GITHUB_PAT: $(GITHUB_PAT)
+- script: |
+    # Configuração do Git
+    git config --global user.email "wesleykalb10@gmail.com"
+    git config --global user.name "Azure Pipeline"
+    
+    # Adiciona remote do GitHub
+    git remote add github https://x-access-token:$(GITHUB_PAT)@github.com/wesleykalb/MyRecipeBook.git
+    
+    # Sincroniza com o GitHub
+    git fetch github
+    
+    # Faz push da branch develop
+    git push github develop:develop
+  env:
+    GITHUB_PAT: $(GITHUB_PAT)
+  displayName: 'Push para GitHub'
