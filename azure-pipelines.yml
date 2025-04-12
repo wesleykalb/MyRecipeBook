@@ -1,5 +1,5 @@
 steps:
-- checkout: git://$(Build.Repository.Name)/$(Build.Repository.Id
+- checkout: git://$(Build.Repository.Name)/$(Build.Repository.Id)
   fetchDepth: 0
   persistCredentials: true  # Mantém as credenciais para operações posteriores
 
