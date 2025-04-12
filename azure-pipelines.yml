@@ -1,28 +1,41 @@
 steps:
-- checkout: git://$(Build.Repository.Name)/$(Build.Repository.Id)  # Checkout do Azure Repos
-  fetchDepth: 0  # Pega todo o histórico
+- checkout: git://$(Build.Repository.Name)/$(Build.Repository.Id
+  fetchDepth: 0
+  persistCredentials: true  # Mantém as credenciais para operações posteriores
 
 - script: |
-    # Configuração do Git
-    git config --global user.email "wesleykalb@gmail.com"
+    # Configuração essencial
+    git config --global user.email "azure-pipeline@example.com"
     git config --global user.name "Azure Pipeline"
     
-    # Mostra branches existentes (para debug)
+    # Mostra o estado atual para debug
+    echo "=== ESTADO INICIAL ==="
+    git status
     git branch -a
+    git remote -v
     
     # Configura autenticação com GitHub
-    echo "https://x-access-token:$GITHUB_TOKEN@github.com" > ~/.git-credentials
     git config --global credential.helper store
+    echo "https://x-access-token:$(GITHUB_PATH)@github.com" > ~/.git-credentials
     
     # Adiciona remote do GitHub
     git remote add github https://github.com/wesleykalb/MyRecipeBook.git
     
-    # Faz push forçado da develop (cria a branch remota se não existir)
-    git push --force github develop:develop
+    # Sincroniza com o repositório GitHub
+    git fetch github
     
-    # Mostra resultado
-    git remote -v
+    # Garante que estamos na branch develop
+    git checkout develop
+    
+    # Faz push de TUDO para o GitHub
+    git push --all github
+    git push --tags github
+    
+    # Verificação final
+    echo "=== ESTADO FINAL ==="
+    git status
     git branch -a
+    ls -la
   env:
-    GITHUB_TOKEN: $(GITHUB_PAT)  # Usando nome mais compatível
-  displayName: 'Push para GitHub'
+    GITHUB_PATH: $(GITHUB_PAT)
+  displayName: 'Push Completo para GitHub'
