@@ -65,9 +65,9 @@ namespace UsesCases.Test.User.Register
 
             var unitOfWork = UnitOfWorkBuilder.Build();
 
-            if (email.IsNullOrEmpty() == false)
+            if (!string.IsNullOrEmpty(email))
             {
-                readRepositoryBuilder.Exists_Active_User_With_Email(email!);
+                readRepositoryBuilder.Exists_Active_User_With_Email(email);
             }
 
             return new RegisterUserUseCase(readRepositoryBuilder.Build(), writeRepository, mapper, passwordEncripter, unitOfWork);
