@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Domain.Repositories.User;
+using MyRecipeBook.Domain.Security.Tokens;
 using MyRecipeBook.Infraestructure.DataAccess;
 using MyRecipeBook.Infraestructure.DataAccess.Repositories;
 using MyRecipeBook.Infraestructure.Extensions;
+using MyRecipeBook.Infraestructure.Security.Tokens.Access.Generator;
 
 namespace MyRecipeBook.Infraestructure
 {
@@ -15,6 +17,7 @@ namespace MyRecipeBook.Infraestructure
         public static void AddInfraestructure(this IServiceCollection services, IConfiguration configuration)
         {
             AddRepositories(services);
+            AddTokens(services, configuration);
 
             if (configuration.IsUnitTestEnvironment())
                 return;
@@ -42,7 +45,7 @@ namespace MyRecipeBook.Infraestructure
             });
         }
 
-        public static void AddFluentMigrator_MySql(IServiceCollection services, IConfiguration configuration)
+        private static void AddFluentMigrator_MySql(IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.ConnectionString();
             services.AddFluentMigratorCore()
@@ -52,6 +55,14 @@ namespace MyRecipeBook.Infraestructure
                         .WithGlobalConnectionString(connectionString)
                         .ScanIn(Assembly.Load("MyRecipeBook.Infraestructure")).For.All();
                 });
+        }
+
+        private static void AddTokens(IServiceCollection services, IConfiguration configuration)
+        {
+            var expirationTimeMinutes = uint.Parse(configuration.GetRequiredSection("Settings:Jwt:ExpirationTimeMinutes").Value!);
+            var signingKey = configuration.GetRequiredSection("Settings:Jwt:SigningKey").Value;
+
+            services.AddScoped<IAccessTokenGenerator>(option => new JwtTokenGenerator(signingKey!, expirationTimeMinutes));
         }
     }
 }
