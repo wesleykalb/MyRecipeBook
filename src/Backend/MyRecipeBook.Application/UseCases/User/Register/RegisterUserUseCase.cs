@@ -4,6 +4,7 @@ using MyRecipeBook.Application.Services.Cryptography;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Repositories.User;
+using MyRecipeBook.Domain.Security.Tokens;
 using MyRecipeBook.Exceptions;
 using MyRecipeBook.Exceptions.ExceptionsBase;
 using MyRecipeBook.Infraestructure.DataAccess.Repositories;
@@ -17,13 +18,15 @@ namespace MyRecipeBook.Application.UseCases.User.Register
         private readonly IMapper _mapper;
         private readonly PasswordEncripter _passwordEncripter;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAccessTokenGenerator _accessTokenGenerator;
 
         public RegisterUserUseCase(
             IUserReadOnlyRepository userRepository,
             IUserWriteOnlyRepository userWriteOnlyRepository,
             IMapper mapper,
             PasswordEncripter passwordEncripter,
-            IUnitOfWork unitOfWork
+            IUnitOfWork unitOfWork,
+            IAccessTokenGenerator accessTokenGenerator
             )
         {
             _readOnlyRepository = userRepository;
@@ -31,6 +34,7 @@ namespace MyRecipeBook.Application.UseCases.User.Register
             _mapper = mapper;
             _passwordEncripter = passwordEncripter;
             _unitOfWork = unitOfWork;
+            _accessTokenGenerator = accessTokenGenerator;
         }
         public async Task<ResponseRegisteredUserJson> Execute(RequestRegisterUserJson content)
         {
@@ -38,13 +42,18 @@ namespace MyRecipeBook.Application.UseCases.User.Register
 
             var user = _mapper.Map<Domain.Entities.User>(content);
             user.Password = _passwordEncripter.Encript(content.Password);
+            user.UserIdentifier = Guid.NewGuid();
 
             await _writeOnlyRepository.Add(user);
             await _unitOfWork.Commit();
 
             return new ResponseRegisteredUserJson
             {
-                Name = user.Name
+                Name = user.Name,
+                Tokens = new ResponseTokensJson
+                {
+                    AccessToken = _accessTokenGenerator.Generate(user.UserIdentifier),
+                }
             };
         }
 
