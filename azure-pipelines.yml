@@ -1,0 +1,23 @@
+steps:
+- checkout: self
+  fetchDepth: 0
+  persistCredentials: true
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Configurar git
+      git config --global user.email "wesleykalb10@gmail.com"
+      git config --global user.name "wesleykalb"
+      
+      # Criar branch local
+      git checkout -b develop origin/develop
+      
+      # Fazer push com autenticação
+      $repoUrl = "https://$($env:GITHUB_PAT)@github.com/wesleykalb/MyRecipeBook.git"
+      git push $repoUrl develop --force
+      
+      Write-Host "Push concluído com sucesso!"
+  env:
+    GITHUB_PAT: $(GITHUB_PAT)
