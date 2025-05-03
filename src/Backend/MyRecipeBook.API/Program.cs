@@ -9,6 +9,8 @@ using MyRecipeBook.Infraestructure;
 using MyRecipeBook.Infraestructure.Extensions;
 using MyRecipeBook.Infraestructure.Migrations;
 
+const string AUTHENTICATION_SCHEME = "Bearer";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -19,7 +21,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.OperationFilter<IdsFilter>();
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    options.AddSecurityDefinition(AUTHENTICATION_SCHEME, new OpenApiSecurityScheme
     {
         Description = @"JWT Authorization header using the Bearer scheme.
         Enter 'Bearer' [space] and then your token in the text input below.
@@ -27,7 +29,7 @@ builder.Services.AddSwaggerGen(options =>
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
-        Scheme="Bearer"
+        Scheme=AUTHENTICATION_SCHEME
     });
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
@@ -37,10 +39,10 @@ builder.Services.AddSwaggerGen(options =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
+                    Id = AUTHENTICATION_SCHEME
                 },
                 Scheme = "oauth2",
-                Name = "Bearer",
+                Name = AUTHENTICATION_SCHEME,
                 In = ParameterLocation.Header
                 
             },
@@ -81,7 +83,7 @@ app.MapControllers();
 
 MigrateDatabase();
 
-app.Run();
+await app.RunAsync();
 
 void MigrateDatabase()
 {

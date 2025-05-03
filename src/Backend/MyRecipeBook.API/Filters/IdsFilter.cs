@@ -15,7 +15,7 @@ public class IdsFilter : IOperationFilter
         
         foreach (var parameter in operation.Parameters)
         {
-            if (encriptedIds.TryGetValue(parameter.Name, out var apiParameter))
+            if (encriptedIds.TryGetValue(parameter.Name, out var _))
             {
                 parameter.Schema.Format = string.Empty;
                 parameter.Schema.Type = "string";
@@ -26,7 +26,7 @@ public class IdsFilter : IOperationFilter
         {
             foreach (var property in schema.Properties)
             {
-                if (encriptedIds.TryGetValue(property.Key, out var apiParameter))
+                if (encriptedIds.TryGetValue(property.Key, out var _))
                 {
                     property.Value.Format = string.Empty;
                     property.Value.Type = "string";
