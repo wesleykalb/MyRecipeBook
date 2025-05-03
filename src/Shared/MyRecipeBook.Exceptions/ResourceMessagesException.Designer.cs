@@ -122,5 +122,98 @@ namespace MyRecipeBook.Exceptions {
                 return ResourceManager.GetString("UNKNOW_ERROR", resourceCulture);
             }
         }
+
+        public static string NO_TOKEN {
+            get {
+                return ResourceManager.GetString("NO_TOKEN", resourceCulture);
+            }
+        }
+
+        public static string USER_WITHOUT_PERMISSION_RESOURCE {
+            get {
+                return ResourceManager.GetString("USER_WITHOUT_PERMISSION_RESOURCE", resourceCulture);
+            }
+        }
+
+        public static string PASSWORD_EMPTY {
+            get {
+                return ResourceManager.GetString("PASSWORD_EMPTY", resourceCulture);
+            }
+        }
+
+        public static string PASSWORD_INVALID_ERROR {
+            get {
+                return ResourceManager.GetString("PASSWORD_INVALID_ERROR", resourceCulture);
+            }
+        }
+
+        public static string RECIPE_TITLE_EMPTY {
+            get {
+                return ResourceManager.GetString("RECIPE_TITLE_EMPTY", resourceCulture);
+            }
+        }
+
+        public static string COOKING_TIME_NOT_SUPPORTED {
+            get {
+                return ResourceManager.GetString("COOKING_TIME_NOT_SUPPORTED", resourceCulture);
+            }
+        }
+
+        public static string DIFFICULT_LEVEL_NOT_SUPPORTED {
+            get {
+                return ResourceManager.GetString("DIFFICULT_LEVEL_NOT_SUPPORTED", resourceCulture);
+            }
+        }
+
+        public static string AT_LEAST_ONE_INGREDIENT {
+            get {
+                return ResourceManager.GetString("AT_LEAST_ONE_INGREDIENT", resourceCulture);
+            }
+        }
+        public static string AT_LEAST_ONE_INSTRUCTION {
+            get {
+                return ResourceManager.GetString("AT_LEAST_ONE_INSTRUCTION", resourceCulture);
+            }
+        }
+        public static string DISH_TYPE_NOT_SUPPORTED {
+            get {
+                return ResourceManager.GetString("DISH_TYPE_NOT_SUPPORTED", resourceCulture);
+            }
+        }
+
+        public static string INGREDIENT_EMPTY {
+            get {
+                return ResourceManager.GetString("INGREDIENT_EMPTY", resourceCulture);
+            }
+        }
+        public static string NON_NEGATIVE_INSTRUCTION_STEP {
+            get {
+                return ResourceManager.GetString("NON_NEGATIVE_INSTRUCTION_STEP", resourceCulture);
+            }
+        }
+
+        public static string INSTRUCTION_EMPTY {
+            get {
+                return ResourceManager.GetString("INSTRUCTION_EMPTY", resourceCulture);
+            }
+        }
+
+        public static string INSTRUCTION_EXCEEDS_LIMIT_CHARACTERS {
+            get {
+                return ResourceManager.GetString("INSTRUCTION_EXCEEDS_LIMIT_CHARACTERS", resourceCulture);
+            }
+        }
+
+        public static string TWO_OR_MORE_INSTRUCTIONS_SAME_ORDER {
+            get {
+                return ResourceManager.GetString("TWO_OR_MORE_INSTRUCTIONS_SAME_ORDER", resourceCulture);
+            }
+        }
+
+        public static string RECIPE_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("RECIPE_NOT_FOUND", resourceCulture);
+            }
+        }
     }
 }
