@@ -1,9 +1,17 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Application.Services.AutoMapper;
-using MyRecipeBook.Application.Services.Cryptography;
+using MyRecipeBook.Application.UseCases.Dashboard;
 using MyRecipeBook.Application.UseCases.Login.DoLogin;
+using MyRecipeBook.Application.UseCases.Recipe;
+using MyRecipeBook.Application.UseCases.Recipe.Delete;
+using MyRecipeBook.Application.UseCases.Recipe.Filter;
+using MyRecipeBook.Application.UseCases.Recipe.GetById;
+using MyRecipeBook.Application.UseCases.Recipe.Update;
+using MyRecipeBook.Application.UseCases.User.Profile;
 using MyRecipeBook.Application.UseCases.User.Register;
+using MyRecipeBook.Application.UseCases.User.Update;
+using Sqids;
 
 namespace MyRecipeBook.Application
 {
@@ -12,29 +20,43 @@ namespace MyRecipeBook.Application
         public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
             AddAutoMapper(services);
+            AddEncoder(services, configuration);
             AddUseCases(services);
-            AddPasswordEncripter(services, configuration);
         }
 
         public static void AddAutoMapper(this IServiceCollection services)
         {
-            services.AddScoped(options => new AutoMapper.MapperConfiguration(options =>
+            services.AddScoped(options => new AutoMapper.MapperConfiguration(optionsMapper =>
             {
-                options.AddProfile(new AutoMapping());
+                var sqids = options.GetService<SqidsEncoder<long>>()!;
+                optionsMapper.AddProfile(new AutoMapping(sqids));
             }).CreateMapper());
 
+        }
+
+        public static void AddEncoder(this IServiceCollection services, IConfiguration configuration)
+        {
+            var sqids = new SqidsEncoder<long>(new ()
+            {
+                MinLength = 3,
+                Alphabet = configuration.GetValue<string>("Settings:IdCryptographyAlphabet")!,
+            });
+            services.AddSingleton(sqids);
         }
 
         public static void AddUseCases(this IServiceCollection services)
         {
             services.AddScoped<IRegisterUserUseCase, RegisterUserUseCase>();
             services.AddScoped<IDoLoginUserCase, DoLoginUserCase>();
-        }
-
-        public static void AddPasswordEncripter(this IServiceCollection services, IConfiguration configuration)
-        {
-            var additionalKey = configuration.GetValue<string>("Settings:Password:AdditionalKey");
-            services.AddScoped(options => new PasswordEncripter(additionalKey!));
+            services.AddScoped<IGetUserProfileUseCase, GetUserProfileUseCase>();
+            services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
+            services.AddScoped<IChangePasswordUseCase, ChangePasswordUseCase>();
+            services.AddScoped<IRegisterRecipeUseCase, RegisterRecipeUseCase>();
+            services.AddScoped<IFilterRecipeUseCase, FilterRecipeUseCase>();
+            services.AddScoped<IGetRecipeByIdUseCase, GetRecipeByIdUseCase>();
+            services.AddScoped<IDeleteRecipeUseCase, DeleteRecipeUseCase>();
+            services.AddScoped<IUpdateRecipeUseCase, UpdateRecipeUseCase>();
+            services.AddScoped<IGetDashboardUseCase, GetDashboardUseCase>();
         }
     }
 }
