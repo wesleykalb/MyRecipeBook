@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.Net;
-using System.Net.Http.Json;
 using System.Text.Json;
 using CommomTesteUtilities.Requests;
 using MyRecipeBook.Communication.Requests;
@@ -47,9 +46,13 @@ namespace UsesCases.Test.Login.DoLogin
 
             var resultName = result.RootElement.GetProperty("name").GetString();
 
+            var resultToken = result.RootElement.GetProperty("tokens").GetProperty("accessToken").GetString();
+
             resultName.ShouldNotBeNullOrWhiteSpace();
 
             resultName.ShouldBe(_name);
+
+            resultToken.ShouldNotBeNullOrWhiteSpace();
         }
 
         [Theory]
