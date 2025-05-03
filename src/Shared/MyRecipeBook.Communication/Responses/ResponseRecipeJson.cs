@@ -12,8 +12,4 @@ public class ResponseRecipeJson
     public CookingTime? CookingTime { get; set; }
     public Difficulty? Difficulty { get; set; }
 
-    public object Should()
-    {
-        throw new NotImplementedException();
-    }
 }
