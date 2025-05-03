@@ -2,12 +2,12 @@
 using CommomTesteUtilities.Mapper;
 using CommomTesteUtilities.Repositories;
 using CommomTesteUtilities.Requests;
-using Microsoft.IdentityModel.Tokens;
+using CommonTestUtilities.Tokens;
 using MyRecipeBook.Application.UseCases.User.Register;
 using MyRecipeBook.Exceptions;
 using MyRecipeBook.Exceptions.ExceptionsBase;
+using MyRecipeBook.Infraestructure.Security.Cryptography;
 using Shouldly;
-using Xunit.Sdk;
 
 namespace UsesCases.Test.User.Register
 {
@@ -21,8 +21,10 @@ namespace UsesCases.Test.User.Register
             var result = await CreateUserCase().Execute(request);
 
             result.ShouldNotBeNull();
+            result.Tokens.ShouldNotBeNull();
             result.Name.ShouldBe(request.Name);
-        }
+            result.Tokens.AccessToken.ShouldNotBeNullOrWhiteSpace();
+        }   
 
         [Fact]
         public async Task Error_Email_Alread_Registered()
@@ -65,12 +67,14 @@ namespace UsesCases.Test.User.Register
 
             var unitOfWork = UnitOfWorkBuilder.Build();
 
+            var accessTokenGenerator = JwtTokenGenerationBuilder.Build();
+
             if (!string.IsNullOrEmpty(email))
             {
                 readRepositoryBuilder.Exists_Active_User_With_Email(email);
             }
 
-            return new RegisterUserUseCase(readRepositoryBuilder.Build(), writeRepository, mapper, passwordEncripter, unitOfWork);
+            return new RegisterUserUseCase(readRepositoryBuilder.Build(), writeRepository, mapper, passwordEncripter, unitOfWork, accessTokenGenerator);
         }
     }
 }

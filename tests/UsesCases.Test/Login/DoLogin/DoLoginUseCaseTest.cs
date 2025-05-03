@@ -2,6 +2,7 @@
 using CommomTesteUtilities.Entities;
 using CommomTesteUtilities.Repositories;
 using CommomTesteUtilities.Requests;
+using CommonTestUtilities.Tokens;
 using MyRecipeBook.Application.UseCases.Login.DoLogin;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Exceptions;
@@ -26,8 +27,10 @@ namespace UsesCases.Test.Login.DoLogin
             });
 
             result.ShouldNotBeNull();
+            result.Tokens.ShouldNotBeNull();
             result.Name.ShouldNotBeNullOrWhiteSpace();
             result.Name.ShouldBe(user.Name);
+            result.Tokens.AccessToken.ShouldNotBeNullOrWhiteSpace();
 
         }
         [Fact]
@@ -43,11 +46,12 @@ namespace UsesCases.Test.Login.DoLogin
         {
             var userReadOnlyRepository = new UserReadOnlyRepositoryBuilder();
             var passwordEncripter = PasswordEncripterbBuilder.Build();
+            var accessTokenGenerator = JwtTokenGenerationBuilder.Build();
 
             if (user is not null)
                 userReadOnlyRepository.GetByEmailAndPassword(user);
 
-            return new DoLoginUserCase(userReadOnlyRepository.Build(), passwordEncripter);
+            return new DoLoginUserCase(userReadOnlyRepository.Build(), passwordEncripter, accessTokenGenerator);
         }
     }
 }
