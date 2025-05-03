@@ -30,10 +30,13 @@ namespace WebApi.Test.User.Register
 
             var responseDataName = responseData.RootElement.GetProperty("name").GetString();
 
+            var resultToken = responseData.RootElement.GetProperty("tokens").GetProperty("accessToken").GetString();
+
             responseData.RootElement.GetProperty("name").GetString().ShouldSatisfyAllConditions(
                 () => responseDataName.ShouldNotBeNull(),
                 () => responseDataName.ShouldBe(request.Name)
             );
+            resultToken.ShouldNotBeNullOrWhiteSpace();
         }
         [Theory]
         [ClassData(typeof(CultureInlineDataTest))]

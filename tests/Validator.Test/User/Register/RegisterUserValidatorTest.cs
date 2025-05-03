@@ -90,5 +90,23 @@ namespace Validator.Test.User.Register
                 () => result.Errors[0].ErrorMessage.ShouldBe(ResourceMessagesException.INVALID_PASSWORD)
             );
         }
+
+        [Fact]
+        public void Error_Password_Empty()
+        {
+            var validator = new RegisterUserValidator();
+
+            var request = RequestRegisterUserJsonBuilder.Build();
+            request.Password = string.Empty;
+
+            var result = validator.Validate(request);
+
+            result.IsValid.ShouldBeFalse();
+            result.Errors.ShouldSatisfyAllConditions(
+                () => result.Errors.ShouldHaveSingleItem(),
+                () => result.Errors[0].ErrorMessage.ShouldBe(ResourceMessagesException.PASSWORD_EMPTY)
+            );
+        }
+        
     }
 }
