@@ -80,7 +80,7 @@ public class ChangePasswordUseCaseTest
         user.Password.ShouldBe(passwordEncripter.Encrypt(password));
     }
 
-    private ChangePasswordUseCase CreateUserCase(MyRecipeBook.Domain.Entities.User user)
+    private static ChangePasswordUseCase CreateUserCase(MyRecipeBook.Domain.Entities.User user)
     {
         var unitOfWork = UnitOfWorkBuilder.Build();
         var loggedUser = LoggedUserBuilder.Build(user);
