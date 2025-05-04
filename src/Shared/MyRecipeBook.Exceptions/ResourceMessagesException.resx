@@ -209,4 +209,16 @@
     <value>Recipe not found.</value>
     <comment/>
   </data>
+  <data name="INVALID_NUMBER_INGREDIENTS" xml:space="preserve">
+    <value>Invalid number of ingredients, the list must contain between 1 and 5 ingredients.</value>
+    <comment/>
+  </data>
+  <data name="DUPLICATED_INGREDIENTS_IN_LIST" xml:space="preserve">
+    <value>There are duplicate ingredients in the list.</value>
+    <comment/>
+  </data>
+  <data name="INGREDIENT_NOT_FOLLOWING_PATTERN" xml:space="preserve">
+    <value>Ingredient does not follow the writing pattern.</value>
+    <comment/>
+  </data>
 </root>
