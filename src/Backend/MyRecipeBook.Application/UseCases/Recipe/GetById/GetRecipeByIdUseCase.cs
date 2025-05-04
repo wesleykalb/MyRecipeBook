@@ -1,7 +1,7 @@
 using AutoMapper;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Repositories.Recipe;
-using MyRecipeBook.Domain.Security.LoggedUser;
+using MyRecipeBook.Domain.Services.LoggedUser;
 using MyRecipeBook.Exceptions;
 using MyRecipeBook.Exceptions.ExceptionsBase;
 

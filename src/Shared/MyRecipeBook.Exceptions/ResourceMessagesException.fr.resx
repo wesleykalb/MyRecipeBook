@@ -209,4 +209,16 @@
     <value>Recette introuvable.</value>
     <comment/>
   </data>
+  <data name="INVALID_NUMBER_INGREDIENTS" xml:space="preserve">
+    <value>Nombre d'ingrédients invalide, la liste doit contenir entre 1 et 5 ingrédients.</value>
+    <comment/>
+  </data>
+  <data name="DUPLICATED_INGREDIENTS_IN_LIST" xml:space="preserve">
+    <value>Il y a des ingrédients en double dans la liste.</value>
+    <comment/>
+  </data>
+  <data name="INGREDIENT_NOT_FOLLOWING_PATTERN" xml:space="preserve">
+    <value>sl'ingrédient ne suit pas le modèle d'écriture.</value>
+    <comment/>
+  </data>
 </root>

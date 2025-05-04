@@ -1,6 +1,6 @@
 using AutoMapper;
 using MyRecipeBook.Communication.Responses;
-using MyRecipeBook.Domain.Security.LoggedUser;
+using MyRecipeBook.Domain.Services.LoggedUser;
 
 namespace MyRecipeBook.Application.UseCases.User.Profile;
 public class GetUserProfileUseCase : IGetUserProfileUseCase
