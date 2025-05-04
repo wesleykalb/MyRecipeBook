@@ -2,7 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using MyRecipeBook.Domain.Entities;
-using MyRecipeBook.Domain.Security.LoggedUser;
+using MyRecipeBook.Domain.Services.LoggedUser;
 using MyRecipeBook.Domain.Security.Tokens;
 using MyRecipeBook.Infraestructure.DataAccess;
 

@@ -1,5 +1,5 @@
 using Moq;
-using MyRecipeBook.Domain.Security.LoggedUser;
+using MyRecipeBook.Domain.Services.LoggedUser;
 
 namespace UsesCases.Test.User.Profile;
 
