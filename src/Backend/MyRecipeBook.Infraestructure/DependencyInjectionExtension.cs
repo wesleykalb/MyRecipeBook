@@ -35,6 +35,7 @@ namespace MyRecipeBook.Infraestructure
 
             AddDbContext_MySqlServer(services, configuration);
             AddFluentMigrator_MySql(services, configuration);
+            AddOpenAI(services, configuration);
         }
 
         private static void AddRepositories(IServiceCollection services)
@@ -93,7 +94,10 @@ namespace MyRecipeBook.Infraestructure
         {
             services.AddScoped<IGenerateRecipeAI, ChatGPTService>();
 
-            var openAIKey = configuration.GetRequiredSection("Settings:OpenAI:ApiKey").Value;
+            var openAIKey = configuration.GetRequiredSection("Settings:OpenAI:ApiKey").Value!;
+
+            services.AddSingleton<OpenAIClient>(_ => new OpenAIClient(openAIKey));
+
         }
     }
 }
