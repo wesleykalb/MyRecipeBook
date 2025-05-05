@@ -18,6 +18,9 @@ using Namespace.MyRecipeBook.Domain.Security.LoggedUser;
 using MyRecipeBook.Domain.Services.OpenAI;
 using MyRecipeBook.Infraestructure.Services.OpenAI;
 using OpenAI;
+using OpenAI.Chat;
+using Microsoft.EntityFrameworkCore.Metadata;
+using MyRecipeBook.Domain.ValueObjects;
 
 namespace MyRecipeBook.Infraestructure
 {
@@ -93,10 +96,9 @@ namespace MyRecipeBook.Infraestructure
         public static void AddOpenAI(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IGenerateRecipeAI, ChatGPTService>();
-
             var openAIKey = configuration.GetRequiredSection("Settings:OpenAI:ApiKey").Value!;
 
-            services.AddSingleton<OpenAIClient>(_ => new OpenAIClient(openAIKey));
+            services.AddScoped(_ => new ChatClient(MyRecipeBookRuleConstants.CHAT_MODEL, openAIKey));
 
         }
     }
