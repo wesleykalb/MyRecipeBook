@@ -1,29 +1,48 @@
 using MyRecipeBook.Domain.Dtos;
+using MyRecipeBook.Domain.Entities.Enums;
 using MyRecipeBook.Domain.Services.OpenAI;
 using OpenAI;
+using OpenAI.Chat;
 
 namespace MyRecipeBook.Infraestructure.Services.OpenAI;
 
 public class ChatGPTService : IGenerateRecipeAI
 {
-    private readonly string CHAT_MODEL = "gpt-4o";
-    private readonly OpenAIClient _openAIAPI;
+    private readonly ChatClient _chatClient;
 
-    public ChatGPTService(OpenAIClient client)
+    public ChatGPTService(ChatClient client)
     {
-        _openAIAPI = client;
+        _chatClient = client;
     }
 
     public async Task<GenerateRecipeDto> Generate(IList<string> ingredients)
     {
-        var chat = _openAIAPI.GetChatClient(CHAT_MODEL);
-        var response = chat.CompleteChat("diga, isso é um teste");
-        var result = response.Value.Content[0].Text;
-        var recipe = new GenerateRecipeDto
+        var messages = new List<ChatMessage>()
         {
-            Title = result! // Assuming GenerateRecipeDto has a property named RecipeContent
+            new SystemChatMessage(ResourceOpenAI.STARTING_GENERATE_RECIPE),
+            new UserChatMessage(string.Join(";", ingredients))
         };
 
-        return recipe;
+        var response = await _chatClient.CompleteChatAsync(messages);
+
+        var responseRecipe = response.Value.Content[0].Text;
+
+        var responseList = responseRecipe.Split("\n")
+            .Where(response => !string.IsNullOrWhiteSpace(response))
+            .Select(response => response.Replace("[", "").Replace("]", ""))
+            .ToList();
+
+        var step = 1;
+        return new GenerateRecipeDto()
+        {
+           Title = responseList[0],
+           CookingTime = (CookingTime)Enum.Parse(typeof(CookingTime), responseList[1]),
+           Ingredients = [.. responseList[2].Split(";")],
+           Instructions = [.. responseList[3].Split("@").Select(instruction => new GeneratedInstructionDto()
+           {
+                Text = instruction.Trim(),
+                Step = step++
+           })]
+        };
     }
 }
