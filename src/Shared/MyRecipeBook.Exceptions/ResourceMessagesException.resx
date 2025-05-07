@@ -221,4 +221,8 @@
     <value>Ingredient does not follow the writing pattern.</value>
     <comment/>
   </data>
+  <data name="ONLY_IMAGES_ACCEPTED" xml:space="preserve">
+    <value>Only images (png, jpg, jpeg) are accepted.</value>
+    <comment/>
+  </data>
 </root>
