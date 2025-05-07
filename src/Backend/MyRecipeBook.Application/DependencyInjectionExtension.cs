@@ -8,6 +8,7 @@ using MyRecipeBook.Application.UseCases.Recipe.Delete;
 using MyRecipeBook.Application.UseCases.Recipe.Filter;
 using MyRecipeBook.Application.UseCases.Recipe.Generate;
 using MyRecipeBook.Application.UseCases.Recipe.GetById;
+using MyRecipeBook.Application.UseCases.Recipe.Image;
 using MyRecipeBook.Application.UseCases.Recipe.Update;
 using MyRecipeBook.Application.UseCases.User.Profile;
 using MyRecipeBook.Application.UseCases.User.Register;
@@ -59,6 +60,7 @@ namespace MyRecipeBook.Application
             services.AddScoped<IUpdateRecipeUseCase, UpdateRecipeUseCase>();
             services.AddScoped<IGetDashboardUseCase, GetDashboardUseCase>();
             services.AddScoped<IGenerateRecipeUseCase, GenerateRecipeUseCase>();
+            services.AddScoped<IAddUpdateImageCoverUseCase, AddUpdateImageCoverUseCase>();
         }
 
     }
