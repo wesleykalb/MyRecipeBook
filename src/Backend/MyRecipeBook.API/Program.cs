@@ -3,6 +3,7 @@ using MyRecipeBook.API.Converters;
 using MyRecipeBook.API.Filters;
 using MyRecipeBook.API.Middleware;
 using MyRecipeBook.API.Token;
+using MyRecipeBook.APIBackgroundServices;
 using MyRecipeBook.Application;
 using MyRecipeBook.Domain.Security.Tokens;
 using MyRecipeBook.Infraestructure;
@@ -61,6 +62,8 @@ builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddScoped<ITokenProvider, HttpContextTokenValue>();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+builder.Services.AddHostedService<DeleteUserService>();
 
 builder.Services.AddHttpContextAccessor();
 

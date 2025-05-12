@@ -1,11 +1,13 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using System.Net;
+using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.EntityFrameworkCore;
 using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Domain.Repositories.User;
 
 namespace MyRecipeBook.Infraestructure.DataAccess.Repositories
 {
-    public class UserRepository : IUserReadOnlyRepository, IUserWriteOnlyRepository, IUserUpdateOnlyRepository
+    public class UserRepository : IUserReadOnlyRepository, IUserWriteOnlyRepository, IUserUpdateOnlyRepository, IUserDeleteOnlyRepository
     {
         private readonly MyRecipeBookDbContext _context;
 
@@ -33,5 +35,19 @@ namespace MyRecipeBook.Infraestructure.DataAccess.Repositories
         }
 
         public void Update(User user) => _context.Users.Update(user);
+
+        public async Task DeleteAccount(Guid userIdentifier)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserIdentifier == userIdentifier);
+
+            if (user is null)
+                return;
+
+            var recipes = _context.Recipes.Where(x => x.UserId == user.id);
+
+            _context.Recipes.RemoveRange(recipes);
+
+            _context.Users.Remove(user);
+        }
     }
 }
