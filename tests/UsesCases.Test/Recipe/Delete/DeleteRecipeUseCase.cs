@@ -1,3 +1,4 @@
+using CommomTesteUtilities.BlobStorage;
 using CommomTesteUtilities.Entities;
 using CommomTesteUtilities.Mapper;
 using CommomTesteUtilities.Repositories;
@@ -48,7 +49,9 @@ public class DeleteRecipeUseCaseTest
         var recipeWriteOnlyRepository = RecipeWriteOnlyRepositoryBuilder.Build();
         var loggedUser = LoggedUserBuilder.Build(user);
         var unitOfWork = UnitOfWorkBuilder.Build();
+        var blobService = new BlobStorageServiceBuilder().GetFileUrl(user, recipe?.ImageIdentifier).Build();
 
-        return new DeleteRecipeUseCase(recipeReadOnlyRepository, recipeWriteOnlyRepository, unitOfWork, loggedUser);
+
+        return new DeleteRecipeUseCase(recipeReadOnlyRepository, recipeWriteOnlyRepository, unitOfWork, loggedUser, blobService);
     }
 }

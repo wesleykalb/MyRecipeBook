@@ -1,3 +1,4 @@
+using CommomTesteUtilities.BlobStorage;
 using CommomTesteUtilities.Entities;
 using CommomTesteUtilities.Mapper;
 using MyRecipeBook.Application.UseCases.Dashboard;
@@ -22,7 +23,7 @@ public class GetDashboardUseCaseTest
         result.ShouldNotBeNull();
         result.Recipes.Count.ShouldBe(recipes.Count);
     }
-
+    
     private static GetDashboardUseCase CreateUseCase(
         MyRecipeBook.Domain.Entities.User user ,
         IList<MyRecipeBook.Domain.Entities.Recipe> recipes)
@@ -32,7 +33,8 @@ public class GetDashboardUseCaseTest
             .Build();
         var loggedUser = LoggedUserBuilder.Build(user);
         var mapper = MapperBuilder.Build();
+        var blobService = new BlobStorageServiceBuilder().GetFileUrl(user, recipes).Build();
 
-        return new GetDashboardUseCase(recipeReadOnlyRepository, loggedUser, mapper);
+        return new GetDashboardUseCase(recipeReadOnlyRepository, loggedUser, mapper, blobService);
     }
 }

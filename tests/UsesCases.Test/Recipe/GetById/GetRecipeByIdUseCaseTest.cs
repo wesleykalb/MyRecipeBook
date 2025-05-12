@@ -1,3 +1,4 @@
+using CommomTesteUtilities.BlobStorage;
 using CommomTesteUtilities.Entities;
 using CommomTesteUtilities.Mapper;
 using MyRecipeBook.Application.UseCases.Recipe.GetById;
@@ -25,6 +26,7 @@ public class GetRecipeByIdUseCaseTest
         response.ShouldNotBeNull();
         response.Id.ShouldNotBeNullOrWhiteSpace();
         response.Title.ShouldBe(recipe.Title);
+        response.ImageUrl.ShouldNotBeNullOrWhiteSpace();
     }
 
     [Fact]
@@ -50,7 +52,8 @@ public class GetRecipeByIdUseCaseTest
         var recipeReadOnlyRepository  = new RecipeReadOnlyRepositoryBuilder().GetRecipeById(user, recipe).Build();
         var loggedUser = LoggedUserBuilder.Build(user);
         var mapper = MapperBuilder.Build();
+        var blobService = new BlobStorageServiceBuilder().GetFileUrl(user, recipe?.ImageIdentifier).Build();
 
-        return new GetRecipeByIdUseCase(recipeReadOnlyRepository, loggedUser, mapper);
+        return new GetRecipeByIdUseCase(recipeReadOnlyRepository, loggedUser, mapper, blobService);
     }
 }

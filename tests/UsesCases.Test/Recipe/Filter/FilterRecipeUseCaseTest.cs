@@ -1,3 +1,5 @@
+using System.Reflection.Metadata.Ecma335;
+using CommomTesteUtilities.BlobStorage;
 using CommomTesteUtilities.Entities;
 using CommomTesteUtilities.Mapper;
 using MyRecipeBook.Application.UseCases.Recipe.Filter;
@@ -60,7 +62,8 @@ public class FilterRecipeUseCaseTest
             var recipeRepository = new RecipeReadOnlyRepositoryBuilder()
                 .Filter(user, recipes)
                 .Build();
+            var blobService = new BlobStorageServiceBuilder().GetFileUrl(user, recipes).Build();
 
-            return new FilterRecipeUseCase(loggedUser, mapper,recipeRepository);
+            return new FilterRecipeUseCase(loggedUser, mapper,recipeRepository, blobService);
         }
 }

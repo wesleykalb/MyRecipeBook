@@ -21,6 +21,13 @@ using OpenAI;
 using OpenAI.Chat;
 using Microsoft.EntityFrameworkCore.Metadata;
 using MyRecipeBook.Domain.ValueObjects;
+using FluentMigrator.Runner.Initialization;
+using MyRecipeBook.Domain.Services.Storage;
+using MyRecipeBook.Infraestructure.Services.Storage;
+using Azure.Storage.Blobs;
+using MyRecipeBook.Domain.Services.ServiceBus;
+using Azure.Messaging.ServiceBus;
+using MyRecipeBook.Infraestructure.Services.ServiceBus;
 
 namespace MyRecipeBook.Infraestructure
 {
@@ -39,6 +46,8 @@ namespace MyRecipeBook.Infraestructure
             AddDbContext_MySqlServer(services, configuration);
             AddFluentMigrator_MySql(services, configuration);
             AddOpenAI(services, configuration);
+            AddAzureStorage(services, configuration);
+            AddQueue(services, configuration);
         }
 
         private static void AddRepositories(IServiceCollection services)
@@ -50,6 +59,7 @@ namespace MyRecipeBook.Infraestructure
             services.AddScoped<IRecipeWriteOnlyRepository, RecipeRepositoy>();
             services.AddScoped<IRecipeReadOnlyRepository, RecipeRepositoy>();
             services.AddScoped<IRecipeUpdateOnlyRepository, RecipeRepositoy>();
+            services.AddScoped<IUserDeleteOnlyRepository, UserRepository>();
         }
 
         private static void AddDbContext_MySqlServer(IServiceCollection services, IConfiguration configuration)
@@ -93,13 +103,41 @@ namespace MyRecipeBook.Infraestructure
             services.AddScoped<IPasswordEncripter>(options => new Sha512Encripter(additionalKey!));
         }
 
-        public static void AddOpenAI(this IServiceCollection services, IConfiguration configuration)
+        private static void AddOpenAI(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IGenerateRecipeAI, ChatGPTService>();
             var openAIKey = configuration.GetRequiredSection("Settings:OpenAI:ApiKey").Value!;
 
             services.AddScoped(_ => new ChatClient(MyRecipeBookRuleConstants.CHAT_MODEL, openAIKey));
 
+        }
+        private static void AddAzureStorage(this IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionString = configuration.GetRequiredSection("Settings:BlobStorage:Azure").Value!;
+
+            if (!string.IsNullOrEmpty(connectionString))
+                services.AddScoped<IBlobStorageService>(c => new AzureStorageService(new BlobServiceClient(connectionString)));
+        }
+
+        private static void AddQueue(this IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionString = configuration.GetRequiredSection("Settings:ServiceBus:DeleteUserAccount").Value!;
+
+            var client = new ServiceBusClient(connectionString, new ServiceBusClientOptions
+            {
+                TransportType = ServiceBusTransportType.AmqpWebSockets
+            });
+
+            var deleteUserQueue = new DeleteUserQueue(client.CreateSender("user"));
+
+            var deleteUserProcessor = new DeleteUserProcessor(client.CreateProcessor("user", new ServiceBusProcessorOptions
+            {
+                MaxConcurrentCalls = 1
+            }));
+
+            services.AddSingleton(deleteUserProcessor);
+
+            services.AddScoped<IDeleteUserQueue>(option => deleteUserQueue);
         }
     }
 }
