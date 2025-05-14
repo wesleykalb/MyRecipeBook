@@ -49,5 +49,13 @@ namespace MyRecipeBook.Infraestructure.DataAccess.Repositories
 
             _context.Users.Remove(user);
         }
+
+        public Task<User?> GetByEmail(string email)
+        {
+            return _context
+                .Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Email.Equals(email) && u.Active);
+        }
     }
 }
