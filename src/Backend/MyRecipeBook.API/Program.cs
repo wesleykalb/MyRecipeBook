@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.OpenApi.Models;
 using MyRecipeBook.API.Converters;
 using MyRecipeBook.API.Filters;
@@ -63,7 +64,12 @@ builder.Services.AddScoped<ITokenProvider, HttpContextTokenValue>();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-builder.Services.AddHostedService<DeleteUserService>();
+if (!builder.Configuration.IsUnitTestEnvironment())
+{
+    builder.Services.AddHostedService<DeleteUserService>();
+
+    AddGoogleAuth();
+}
 
 builder.Services.AddHttpContextAccessor();
 
@@ -99,6 +105,20 @@ void MigrateDatabase()
         .CreateScope();
 
     DatabaseMigration.Migrate(connectionString, serviceScope.ServiceProvider);
+}
+
+void AddGoogleAuth()
+{
+    var clientId = builder.Configuration.GetValue<string>("Settings:Google:ClientId")!;
+    var clientSecret = builder.Configuration.GetValue<string>("Settings:Google:ClientSecret")!;
+
+    builder.Services.AddAuthentication(config => {
+        config.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    }).AddCookie()
+    .AddGoogle(options =>{
+        options.ClientId = clientId;
+        options.ClientSecret = clientSecret;
+    });
 }
 
 public partial class Program
