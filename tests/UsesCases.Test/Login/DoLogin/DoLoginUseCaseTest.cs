@@ -2,6 +2,7 @@
 using CommomTesteUtilities.Entities;
 using CommomTesteUtilities.Repositories;
 using CommomTesteUtilities.Requests;
+using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Tokens;
 using MyRecipeBook.Application.UseCases.Login.DoLogin;
 using MyRecipeBook.Communication.Requests;
@@ -47,11 +48,14 @@ namespace UsesCases.Test.Login.DoLogin
             var userReadOnlyRepository = new UserReadOnlyRepositoryBuilder();
             var passwordEncripter = PasswordEncripterbBuilder.Build();
             var accessTokenGenerator = JwtTokenGenerationBuilder.Build();
+            var refreshTokenGenerator = RefreshTokenGeneratorBuilder.Build();
+            var tokenRepository = new TokenRepositoryBuilder().Build();
+            var unitOfWork = UnitOfWorkBuilder.Build();
 
             if (user is not null)
-                userReadOnlyRepository.GetByEmailAndPassword(user);
+                userReadOnlyRepository.GetByEmail(user);
 
-            return new DoLoginUserCase(userReadOnlyRepository.Build(), passwordEncripter, accessTokenGenerator);
+            return new DoLoginUserCase(userReadOnlyRepository.Build(), passwordEncripter, accessTokenGenerator,refreshTokenGenerator, tokenRepository, unitOfWork);
         }
     }
 }

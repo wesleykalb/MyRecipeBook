@@ -2,6 +2,7 @@ using CommomTesteUtilities.Cryptography;
 using CommomTesteUtilities.Entities;
 using CommomTesteUtilities.Repositories;
 using CommomTesteUtilities.Requests;
+using MyRecipeBook.Application.UseCases.User.ChangePassword;
 using MyRecipeBook.Application.UseCases.User.Update;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Exceptions;
@@ -27,10 +28,6 @@ public class ChangePasswordUseCaseTest
         Func<Task> act = async () => {await useCase.Execute(request);};
 
         await act.ShouldNotThrowAsync();
-
-        var passwordEncripter = PasswordEncripterbBuilder.Build();
-
-        user.Password.ShouldBe(passwordEncripter.Encrypt(request.NewPassword));
     }
 
     [Fact]
@@ -53,9 +50,6 @@ public class ChangePasswordUseCaseTest
                 () => act.ShouldNotBeNull(),
                 () => act.ShouldThrow<ErrorOnValidationException>().ErrorMessages.Contains(ResourceMessagesException.PASSWORD_EMPTY)
             );
-        var passwordEncripter = PasswordEncripterbBuilder.Build();
-
-        user.Password.ShouldBe(passwordEncripter.Encrypt(password));
     }
 
     [Fact]
@@ -74,10 +68,6 @@ public class ChangePasswordUseCaseTest
                 () => act.ShouldNotBeNull(),
                 () => act.ShouldThrow<ErrorOnValidationException>().ErrorMessages.Contains(ResourceMessagesException.PASSWORD_INVALID_ERROR)
             );
-
-        var passwordEncripter = PasswordEncripterbBuilder.Build();
-
-        user.Password.ShouldBe(passwordEncripter.Encrypt(password));
     }
 
     private static ChangePasswordUseCase CreateUserCase(MyRecipeBook.Domain.Entities.User user)

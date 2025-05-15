@@ -8,7 +8,7 @@ using MyRecipeBook.Exceptions;
 using MyRecipeBook.Exceptions.ExceptionsBase;
 using MyRecipeBook.Infraestructure.DataAccess.Repositories;
 
-namespace MyRecipeBook.Application.UseCases.User.Update;
+namespace MyRecipeBook.Application.UseCases.User.ChangePassword;
 
 public class ChangePasswordUseCase : IChangePasswordUseCase
 {
@@ -50,9 +50,7 @@ public class ChangePasswordUseCase : IChangePasswordUseCase
     {
         var result = new ChangePasswordValidator().Validate(request);
 
-        var currentPasswordEncripted = _passwordEncripter.Encrypt(request.Password);
-
-        if (!currentPasswordEncripted.Equals(loggedUser.Password))
+        if (!_passwordEncripter.IsValid(request.Password, loggedUser.Password))
         {
             result.Errors.Add(new FluentValidation.Results.ValidationFailure(string.Empty, ResourceMessagesException.PASSWORD_INVALID_ERROR));
         }

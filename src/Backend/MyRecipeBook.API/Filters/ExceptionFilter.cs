@@ -36,6 +36,16 @@ namespace MyRecipeBook.API.Filters
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 context.Result = new NotFoundObjectResult(new ResponseErrorJson(context.Exception.Message));
             }
+            else if (context.Exception is RefreshTokenExpiredException)
+            {
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                context.Result = new NotFoundObjectResult(new ResponseErrorJson(context.Exception.Message));
+            }
+            else if (context.Exception is RefreshTokenNotFoundException)
+            {
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                context.Result = new NotFoundObjectResult(new ResponseErrorJson(context.Exception.Message));
+            }
         }
 
         private static void ThrowUnknomException(ExceptionContext context)
