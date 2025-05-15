@@ -28,6 +28,8 @@ using Azure.Storage.Blobs;
 using MyRecipeBook.Domain.Services.ServiceBus;
 using Azure.Messaging.ServiceBus;
 using MyRecipeBook.Infraestructure.Services.ServiceBus;
+using MyRecipeBook.Infraestructure.Security.Tokens.Refresh;
+using MyRecipeBook.Domain.Repositories.Token;
 
 namespace MyRecipeBook.Infraestructure
 {
@@ -35,7 +37,7 @@ namespace MyRecipeBook.Infraestructure
     {
         public static void AddInfraestructure(this IServiceCollection services, IConfiguration configuration)
         {
-            AddPasswordEncripter(services, configuration);
+            AddPasswordEncripter(services);
             AddRepositories(services);
             AddLoggedUser(services);
             AddTokens(services, configuration);
@@ -60,6 +62,7 @@ namespace MyRecipeBook.Infraestructure
             services.AddScoped<IRecipeReadOnlyRepository, RecipeRepositoy>();
             services.AddScoped<IRecipeUpdateOnlyRepository, RecipeRepositoy>();
             services.AddScoped<IUserDeleteOnlyRepository, UserRepository>();
+            services.AddScoped<ITokenRepository, TokenRepository>();
         }
 
         private static void AddDbContext_MySqlServer(IServiceCollection services, IConfiguration configuration)
@@ -93,14 +96,15 @@ namespace MyRecipeBook.Infraestructure
 
             services.AddScoped<IAccessTokenGenerator>(option => new JwtTokenGenerator(signingKey!, expirationTimeMinutes));
             services.AddScoped<IAccessTokenValidator>(option => new JwtTokenValidator(signingKey!));
+
+            services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
         }
 
         private static void AddLoggedUser(IServiceCollection services) => services.AddScoped<ILoggedUser, LoggedUser>();
     
-        private static void AddPasswordEncripter(this IServiceCollection services, IConfiguration configuration)
+        private static void AddPasswordEncripter(this IServiceCollection services)
         {
-            var additionalKey = configuration.GetRequiredSection("Settings:Password:AdditionalKey").Value!.ToString();
-            services.AddScoped<IPasswordEncripter>(options => new Sha512Encripter(additionalKey!));
+            services.AddScoped<IPasswordEncripter, BCryptNet>();
         }
 
         private static void AddOpenAI(this IServiceCollection services, IConfiguration configuration)

@@ -1,5 +1,5 @@
 using CommomTesteUtilities.Requests;
-using MyRecipeBook.Application.UseCases.User.Update;
+using MyRecipeBook.Application.UseCases.User.ChangePassword;
 using MyRecipeBook.Exceptions;
 using Shouldly;
 

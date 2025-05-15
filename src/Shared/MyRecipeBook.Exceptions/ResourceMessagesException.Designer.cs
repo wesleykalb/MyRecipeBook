@@ -238,5 +238,17 @@ namespace MyRecipeBook.Exceptions {
                 return ResourceManager.GetString("ONLY_IMAGES_ACCEPTED", resourceCulture);
             }
         }
+        public static string EXPIRED_SESSION {
+            get {
+                return ResourceManager.GetString("EXPIRED_SESSION", resourceCulture);
+            }
+        }
+
+        public static string INVALID_SESSION {
+            get {
+                return ResourceManager.GetString("INVALID_SESSION", resourceCulture);
+            }
+        }
+        
     }
 }
