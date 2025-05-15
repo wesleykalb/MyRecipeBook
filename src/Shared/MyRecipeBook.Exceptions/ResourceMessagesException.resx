@@ -225,4 +225,12 @@
     <value>Only images (png, jpg, jpeg) are accepted.</value>
     <comment/>
   </data>
+  <data name="EXPIRED_SESSION" xml:space="preserve">
+    <value>Unable to find a valid session. Please log in to access this feature.</value>
+    <comment/>
+  </data>
+  <data name="INVALID_SESSION" xml:space="preserve">
+    <value>Unable to find a valid session. Please log in to access this feature.</value>
+    <comment/>
+  </data>
 </root>

@@ -2,6 +2,7 @@
 using CommomTesteUtilities.Mapper;
 using CommomTesteUtilities.Repositories;
 using CommomTesteUtilities.Requests;
+using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Tokens;
 using MyRecipeBook.Application.UseCases.User.Register;
 using MyRecipeBook.Exceptions;
@@ -69,12 +70,17 @@ namespace UsesCases.Test.User.Register
 
             var accessTokenGenerator = JwtTokenGenerationBuilder.Build();
 
+            var refreshTokenGenerator = RefreshTokenGeneratorBuilder.Build();
+            
+            var tokenRepository = new TokenRepositoryBuilder().Build();
+            
+
             if (!string.IsNullOrEmpty(email))
             {
                 readRepositoryBuilder.Exists_Active_User_With_Email(email);
             }
 
-            return new RegisterUserUseCase(readRepositoryBuilder.Build(), writeRepository, mapper, passwordEncripter, unitOfWork, accessTokenGenerator);
+            return new RegisterUserUseCase(readRepositoryBuilder.Build(), writeRepository, mapper, passwordEncripter, unitOfWork, accessTokenGenerator, refreshTokenGenerator, tokenRepository);
         }
     }
 }
